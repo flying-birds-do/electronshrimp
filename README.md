@@ -1,2 +1,3 @@
 # electronshrimp
-electron 小虾米music
+electron + vue 小虾米music 
+
