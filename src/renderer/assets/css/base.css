@@ -1,0 +1,456 @@
+html {
+  color: #000;
+  background: #FFF;
+}
+
+body,
+div,
+dl,
+dt,
+dd,
+ul,
+ol,
+li,
+h1,
+h2,
+h3,
+h4,
+h5,
+h6,
+pre,
+code,
+form,
+fieldset,
+legend,
+input,
+textarea,
+p,
+blockquote,
+th,
+td {
+  margin: 0;
+  padding: 0;
+}
+
+table {
+  border-collapse: collapse;
+  border-spacing: 0;
+}
+
+fieldset,
+img {
+  border: 0;
+}
+
+address,
+caption,
+cite,
+code,
+dfn,
+em,
+strong,
+th,
+var {
+  font-style: normal;
+  font-weight: normal;
+}
+
+ol,
+ul,
+nav,
+li {
+  list-style: none;
+}
+
+caption,
+th {
+  text-align: left;
+}
+
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+  font-size: 100%;
+  font-weight: normal;
+}
+
+q:before,
+q:after {
+  content: '';
+}
+
+abbr,
+acronym {
+  border: 0;
+  font-variant: normal;
+}
+
+sup {
+  vertical-align: text-top;
+}
+
+sub {
+  vertical-align: text-bottom;
+}
+
+input,
+textarea,
+select {
+  font-family: inherit;
+  font-size: inherit;
+  font-weight: inherit;
+
+}
+
+input,
+textarea::-webkit-input-placeholder {
+  color: #9C9C9CFF;
+}
+
+input,
+textarea::-moz-placeholder {
+  /* Mozilla Firefox 19+ */
+  color: #9C9C9CFF;
+}
+
+
+input,
+textarea:-ms-input-placeholder {
+  /* Internet Explorer 10-11 */
+  color: #9C9C9CFF;
+}
+
+input,
+textarea,
+select {
+  *font-size: 100%;
+}
+
+legend {
+  color: #000;
+}
+
+.fl {
+  float: left;
+}
+
+.fr {
+  float: right;
+}
+
+.clearfix:after {
+  content: " ";
+  display: block;
+  clear: both;
+  height: 0;
+}
+
+.clearfix {
+  zoom: 1;
+}
+
+/* YUI CSS Detection Stamp */
+
+#yui3-css-stamp.cssreset {
+  display: none;
+}
+
+html,
+body {
+  font-family: "PingFangSC-Regular", "Microsoft YaHei", "SimSun", sans-serif;
+  box-sizing: border-box;
+  -moz-box-sizing: border-box;
+  /* Firefox */
+  -webkit-box-sizing: border-box;
+  /* Safari */
+}
+
+.w1200 {
+  width: 1200px;
+  margin: 0 auto;
+}
+
+button {
+  border: none;
+  outline: none;
+  background: none;
+  padding: 0;
+  margin: 0;
+  cursor: pointer;
+}
+
+.col-high {
+  color: #EC5353;
+}
+
+
+.pt20 {
+  padding-top: 20px;
+}
+
+i {
+  font-style: normal;
+}
+
+/* //消除google浏览器黄色框 */
+input {
+  outline: none;
+}
+
+input:-webkit-autofill {
+  -webkit-box-shadow: 0 0 0px 1000px #fff inset;
+  background-image: none;
+  color: #000;
+  background-color: #fff;
+}
+
+input[type=number] {
+  -moz-appearance: textfield;
+}
+
+input[type=number]::-webkit-inner-spin-button,
+input[type=number]::-webkit-outer-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+
+*,
+*:before,
+*:after {
+  box-sizing: border-box;
+}
+
+.box-shodow {
+  box-shadow: 0 0 16px 0 hsla(0, 0%, 77.3%, .5);
+}
+
+.box-shodow-hover:hover {
+  box-shodow: 0 0 16px 0 hsla(0, 0%, 77.3%, .5);
+  cursor: pointer;
+}
+
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+  background: #b9b9b9;
+}
+
+::-webkit-scrollbar-button {
+  display: none;
+}
+
+.shop-img.vertical {
+  width: 235px;
+  height:235px;
+  overflow: hidden;
+}
+.card {
+  margin-right: 5px;
+}
+.icon-shi {
+  width: 18px;
+  height: 14px;
+  display: inline-block;
+  vertical-align: middle;
+}
+.icon-bao {
+  width: 12px;
+  height: 14px;
+  vertical-align: middle;
+}
+input::-webkit-input-placeholder {
+  font-size: 14px;
+}
+
+input::-moz-placeholder {
+  /* Mozilla Firefox 19+ */
+  font-size: 14px;
+}
+
+input:-moz-placeholder {
+  /* Mozilla Firefox 4 to 18 */
+  font-size: 14px;
+}
+
+input:-ms-input-placeholder {
+  /* Internet Explorer 10-11 */
+  font-size: 14px;
+}
+
+::-webkit-scrollbar-thumb {
+  border-radius: 10px;
+  background: #ccc;
+}
+
+::-webkit-scrollbar-track {
+  border-radius: 10px;
+  background: #b9b9b9;
+}
+
+a {
+  text-decoration: none;
+}
+
+.no-data-box {
+  color: #9C9C9C;
+  text-align: center;
+  height: 374px;
+  background-color: #fff;
+  padding-top: 126px;
+  font-size: 14px;
+  border: 1px solid transparent;
+  margin-bottom: 20px;
+}
+
+.no-data-box i {
+  margin-bottom: 19px;
+  display: block;
+  font-size: 90px;
+  color: #EBEBEB;
+}
+
+.rate {
+  margin-bottom: 6px;
+  float: left;
+}
+
+.card {
+  color: #E35264;
+}
+
+.ensure {
+  color: #2AC1CA;
+}
+
+/*分页样式修改*/
+.el-pager li {
+  width: 35px !important;
+  height: 35px !important;
+  line-height: 35px !important;
+  font-size: 12px !important;
+}
+
+.el-pagination span:not([class*=suffix]),
+.el-pagination button {
+  width: 35px !important;
+  height: 35px !important;
+  line-height: 35px !important;
+  font-size: 12px !important;
+}
+
+.el-pagination {
+  padding: 0 !important;
+}
+
+.el-pagination.is-background .btn-prev,
+.el-pagination.is-background .btn-next,
+.el-pagination.is-background .el-pager li {
+  margin-right: 0 !important;
+}
+.el-pagination.is-background .el-pager li:not(.disabled).active {
+  border: none;
+}
+.el-pagination span:not([class*=suffix]), .el-pagination button {
+  display: inline !important;
+}
+.el-pagination__editor.el-input .el-input__inner {
+  height: 35px !important;
+  margin: 0 4px;
+}
+.el-pagination__editor.el-input {
+    width: 50px;
+    margin: 0 7px;
+    height: 35px;
+}
+.banner {
+  overflow: hidden;
+}
+.shopping-remmond {
+  position: relative;
+}
+.shopping-remmond .none-mask-style {
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: 100%;
+  line-height: 100%;
+  font-size: 18px;
+  color: #fff;
+  letter-spacing: 2px;
+  text-align: center;
+  background: rgba(0, 0, 0, 0.5);
+  z-index: 300;
+  font-size: 16px;
+}
+.popper__arrow {
+  display: none !important;
+}
+.icon-exit {
+  margin-right: 8px;
+}
+.icon-start {
+  margin-right: 4px;
+}
+ .icon-start:last-child {
+  margin-right: 0;
+}
+#cnzz_stat_icon_1278624522 {
+  display: none;
+}
+input::-ms-clear{display:none;color: #2AC1CA;}
+/* 文本输入框删除按钮 */
+input::-ms-clear{display: none !important;}
+/* 密码框小眼睛 */
+input::-ms-reveal{display: none !important;}
+input[type=text]::-ms-clear {
+  display:none
+  }
+  /* ie9 */
+  .el-message .el-message__content{
+
+    display: inline-block\0;
+
+}
+.el-select .el-input .el-input__suffix .el-icon-arrow-up{
+
+  -ms-transform: rotate(180deg)\0;
+
+}
+.el-cascader-menu__list .el-cascader-node .el-cascader-node__postfix,
+
+.el-cascader-menu__list .is-active .el-cascader-node__prefix{
+
+    top: 10px\0;
+
+}
+.demonstration, .el-date-editor--datetimerange {
+
+      display: inline-block !important;
+  
+      vertical-align: middle;
+  
+      line-height: 24px;
+  
+  }
+  input::-ms-clear {
+    width : 0;
+    height: 0;
+  }
+  input::-ms-clear,input::-ms-reveal{display: none !important;}
+  .el-textarea__inner {
+    overflow: hidden\0;
+  }
+  #cnzz_stat_icon_1278624099 {
+    display: none;
+  }
+  .icon {
+    width: 1em;
+    height: 1em;
+    vertical-align: -0.15em;
+    fill: currentColor;
+    overflow: hidden;
+  }
