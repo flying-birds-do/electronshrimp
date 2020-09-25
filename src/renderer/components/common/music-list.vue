@@ -1,17 +1,36 @@
 <template>
   <section class="music-list-warp">
     <ul>
-      <li v-for="(item,index) in 10" :key="index">
+      <li v-for="(item,index) in musicName" :key="index" @click="playCurrentMusic(item)">
         <div class="single-box">
-          <span class="play-mount">178.3万</span>
-          <img src="@/assets/images/logo.jpg" alt class="music-bg" />
+          <span class="play-mount">{{item.mount}}</span>
+          <img :src="item.urlimage" alt class="music-bg" />
         </div>
-        <p>90后的回忆</p>
-        <span class="col-grey">小夏</span>
+        
+        <p>{{item.name}}</p>
+        <span class="col-grey">{{item.autor}}</span>
       </li>
     </ul>
   </section>
 </template>
+<script>
+export default {
+  props:{
+    musicName:{
+      type:Array,
+      default:() =>{
+        return []
+      }
+    }
+  },
+  methods:{
+    playCurrentMusic (item) {
+      this.$store.dispatch('submitCurrentPath',item)
+      this.$emit('playCurrentMusic')
+    }
+  }
+}
+</script>
 <style  lang="scss" scoped>
 .music-list-warp {
     padding: 30px ;
@@ -21,6 +40,8 @@
     li {
         width: 180px;
         margin-right: 50px;
+        position: relative;
+        margin-bottom: 10px;
       .single-box {
         position: relative;
         .play-mount {
@@ -51,7 +72,8 @@
         }
         
         .music-bg {
-          width: 160px;
+          // width: 160px;
+          width: 100%;
           height: 160px;
         }
       }

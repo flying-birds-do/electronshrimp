@@ -18,7 +18,7 @@
           <p>每日30首</p>
         </li>
         <li>
-           <span class="iconfont icon-yiliao"></span>
+          <span class="iconfont icon-yiliao"></span>
           <p>听见不同</p>
         </li>
         <li>
@@ -26,21 +26,21 @@
           <p>猜你喜欢</p>
         </li>
         <li>
-        <span class="iconfont icon-paihangbang"></span>
+          <span class="iconfont icon-paihangbang"></span>
           <p>私人电台</p>
         </li>
       </ul>
     </div>
     <div class="remond-music">
       <h2>推荐歌单</h2>
-      <music-list></music-list>
+      <music-list @playCurrentMusic="playCurrentMusic" :musicName="musicName"></music-list>
     </div>
     <div class="remond-music">
       <h2>
         <p>AI推荐</p>
         <span class="total">全部 ></span>
       </h2>
-      <music-list></music-list>
+      <music-list  @playCurrentMusic="playCurrentMusic" :musicName="musicName"></music-list>
     </div>
     <div class="remond-music">
       <h2>
@@ -59,6 +59,7 @@
 </template>
 <script>
 import musicList from "@/components/common/music-list";
+import { music } from "@/music-data.js";
 export default {
   data() {
     return {
@@ -66,32 +67,78 @@ export default {
         {
           url: require("@/assets/images/1.jpg")
         },
-         {
+        {
           url: require("@/assets/images/2.jpg")
         },
-         {
+        {
           url: require("@/assets/images/3.jpg")
         },
-         {
+        {
           url: require("@/assets/images/4.jpg")
         },
-         {
+        {
           url: require("@/assets/images/5.jpg")
         },
-         {
+        {
           url: require("@/assets/images/6.jpg")
         },
-         {
+        {
           url: require("@/assets/images/7.jpg")
         },
-         {
+        {
           url: require("@/assets/images/9.jpg")
         }
-      ]
+      ],
+      musicData: [],
+      musicName:[],
+      randomSelf:''
     };
+  },
+  mounted() {
+    console.log(music);
+        this.musicData = music.musicListData
   },
   components: {
     musicList
+  },
+  methods: {
+    playCurrentMusic(item) {
+      this.$emit("playCurrentMusic", item);
+         this.$parent.playProcess()
+    },
+   randomname(name,words) {
+        const xing = name.split("");
+        this.randomSelf = xing[Math.floor(Math.random() * (xing.length))] + words[Math.floor(Math.random() * (words.length))];
+        return this.randomSelf;
+    },
+    // 截取歌名 去掉.mp3
+    sbuStrMusicName(musicList, musicImgData) {
+      let musicName = [];
+      let nameStr =`赵钱孙李周吴郑王冯陈褚卫蒋沈韩杨朱秦尤许何吕施张孔曹严华金魏陶姜戚谢邹喻柏水窦章云苏潘葛奚范彭郎鲁韦昌马苗凤花方俞任袁柳酆鲍史唐费廉岑薛雷贺倪汤滕殷罗毕郝邬安常乐于时傅皮卞齐康伍余元卜顾孟平黄和穆萧尹姚邵湛汪祁毛禹狄米贝明臧计伏成戴谈宋茅庞熊纪舒屈项祝董梁杜阮蓝闵席季麻强贾路娄危江童颜郭梅盛林刁钟徐邱骆高夏蔡田樊胡凌霍虞万支柯昝管卢莫经房裘缪干解应宗丁宣贲邓郁单杭洪包诸左石崔吉钮龚程嵇邢滑裴陆荣翁荀羊於惠甄曲家封芮羿储靳汲邴糜松井段富巫乌焦巴弓牧隗山谷车侯宓蓬全郗班仰秋仲伊宫宁仇栾暴甘钭厉戎祖武符刘景詹束龙叶幸司韶郜黎蓟薄印宿白怀蒲邰从鄂索咸籍赖卓蔺屠蒙池乔阴鬱胥能苍双闻莘党翟谭贡劳逄姬申扶堵冉宰郦卻璩桑桂濮牛寿通边扈燕冀郏浦尚农温别庄晏柴瞿阎充慕连茹习宦艾鱼容向古易慎戈廖庾终暨居衡步都耿满弘匡国文寇广禄阙东欧殳沃利蔚越夔隆师巩厍聂晁勾敖融冷訾辛阚那简饶空曾毋沙乜养鞠须丰巢关蒯相查后荆红游竺权逯盖益桓公万俟司马上官欧阳夏侯诸葛闻人东方赫连皇甫尉迟公羊澹台公冶宗政濮阳淳于单于太叔申屠公孙仲孙轩辕令狐钟离宇文长孙慕容鲜于闾丘司徒司空丌官司寇仉督子车颛孙端木巫马公西漆雕乐正壤驷公良拓跋夹谷宰父谷梁晋楚闫法汝鄢涂钦段干百里东郭南门呼延归海羊舌微生岳帅缑亢况郈有琴梁丘左丘东门西门商牟佘佴伯赏南宫墨哈谯笪年爱阳佟第五言福`;
+      let langulage = ['春暖花开','十字路口','千军万马','白手起家','张灯结彩','风和日丽','万里长城','人来人往','自由自在','瓜田李下','助人为乐','红男绿女','春风化雨','马到成功','拔苗助长','安居乐业','走马观花','念念不忘','落花流水','一往无前','落地生根','天罗地网','东山再起','一事无成','山清水秀','语重心','别有洞天','水深火热','鸟语花香','自以为是']
+      const pathname = __static + "/music/";
+      const pathnameImg = __static + "/images/";
+      for (let i = 0; i < musicList.length; i++) {
+        let musicObj = {};
+        if (musicList[i].indexOf(".mp3") > -1) {
+          musicObj["name"] = musicList[i].slice(0, musicList[i].length - 4);
+          musicObj["path"] = pathname + musicList[i];
+          musicObj["mount"] = Math.floor(Math.random() * 100000);
+          musicObj["id"] = i;
+          musicObj["autor"] = this.randomname(nameStr,langulage);
+          musicObj["urlimage"] =
+            pathnameImg +
+            musicImgData[Math.floor(Math.random() * musicImgData.length)];
+          musicName.push(musicObj);
+        }
+      }
+      this.musicName  = musicName;
+    }
+  },
+  watch:{
+    musicData (oldValue,newValue) {
+       this.sbuStrMusicName(music.musicListData, music.musicImgData);
+    }
   }
 };
 </script>
@@ -105,7 +152,7 @@ export default {
     height: 240px;
     width: 100%;
     img {
-        height: 100%;
+      height: 100%;
     }
   }
   .el-carousel__item h3 {

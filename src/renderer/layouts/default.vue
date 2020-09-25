@@ -13,31 +13,51 @@
           <div class="munu-list-warp">
             <h3>音乐库</h3>
             <ul class="munu-list">
-              <li><i class="iconfont icon-faxian"></i>发现音乐</li>
-              <li><i class="iconfont icon-yinle2"></i>歌单</li>
-              <li><i class="iconfont icon-paihangbang"></i>排行榜</li>
+              <li>
+                <i class="iconfont icon-faxian"></i>发现音乐
+              </li>
+              <li>
+                <i class="iconfont icon-yinle2"></i>歌单
+              </li>
+              <li>
+                <i class="iconfont icon-paihangbang"></i>排行榜
+              </li>
             </ul>
           </div>
           <div class="munu-list-warp">
             <h3>我的音乐</h3>
             <ul class="munu-list">
-              <li><i class="iconfont icon-bendishenghuo"></i>本地歌曲</li>
-              <li><i class="iconfont icon-zuijinfangwen-"></i>最近播放</li>
-              <li><i class="iconfont icon-yinle10"></i>我的收藏</li>
-              <li><i class="iconfont icon-yigoushuliang"></i>已购音乐</li>
+              <li>
+                <i class="iconfont icon-bendishenghuo"></i>本地歌曲
+              </li>
+              <li>
+                <i class="iconfont icon-zuijinfangwen-"></i>最近播放
+              </li>
+              <li>
+                <i class="iconfont icon-yinle10"></i>我的收藏
+              </li>
+              <li>
+                <i class="iconfont icon-yigoushuliang"></i>已购音乐
+              </li>
             </ul>
           </div>
           <div class="munu-list-warp">
-            <h3 class="my-music-list">我的歌单(0)<i>+</i></h3>
+            <h3 class="my-music-list">
+              我的歌单(0)
+              <i>+</i>
+            </h3>
           </div>
         </div>
         <div class="defalut-content-right">
           <div class="default-top-info">
             <div class="fresh-warp">
-              <span class="icon-arrow"><i class="iconfont icon-jiantouarrowhead7"></i><i  class="iconfont icon-jiantou"></i></span>
+              <span class="icon-arrow">
+                <i class="iconfont icon-jiantouarrowhead7"></i>
+                <i class="iconfont icon-jiantou"></i>
+              </span>
               <span class="fresh iconfont icon-shuaxinzhongjieban"></span>
               <div class="search-warp">
-                  <i class="iconfont icon-sousuo"></i>
+                <i class="iconfont icon-sousuo"></i>
                 <input type="text" />
               </div>
             </div>
@@ -46,23 +66,28 @@
                 <img src="@/assets/images/logo.jpg" alt />
                 <p>昏睡的月饼</p>
               </div>
-              <span class="iconfont icon-icon-test"></span>
-              <span class="iconfont icon-zuixiaohua"></span>
-              <span class="iconfont icon--zuidahua"></span>
+              <span class="iconfont icon-icon-test" @click="setting"></span>
+              <span class="iconfont icon-zuixiaohua" @click="minisize"></span>
+              <span
+                class="iconfont"
+                @click="maxsize"
+                :class="isMaxSize ?'icon-zuidahua2':'icon-zuidahua'"
+              ></span>
               <span class="close iconfont icon-guanbi5" @click="closeWindow"></span>
             </div>
           </div>
           <div class="asynic-content">
+            {{$store.currentObj}}
             <router-view />
           </div>
         </div>
       </div>
       <div class="default-bottom-warp">
         <div class="simply-image-warp">
-          <img src="@/assets/images/logo.jpg" alt class="out-img" />
+          <img :src="$store.state.Counter.currentObj.urlimage" alt class="out-img" />
           <div class="music-name">
-            <h3>一直很安静</h3>
-            <span>阿桑</span>
+            <h3>{{$store.state.Counter.currentObj.name}}</h3>
+            <span>{{$store.state.Counter.currentObj.autor}}</span>
           </div>
           <div class="music-type">
             <h3>标准</h3>
@@ -83,13 +108,25 @@
           </div>
         </div>
         <div class="play-operate">
+       
+          <!-- <audio controls="controls" autoplay="autoplay" @click="clickControls">
+              <source :src="url" type="audio/mpeg" />
+              Your browser does not support the audio element.
+          </audio>-->
           <div class="play-btn">
-          <span  class="iconfont icon-jiantouarrowhead7"></span>
-          <p class="iconfont icon-bofang2"></p>
-          <span  class="iconfont icon-jiantou"></span>
+            <!--  -->
+            
+             <span class="iconfont icon-jiantouarrowhead7"></span> 
+            <!-- <p class="iconfont icon-bofang2"></p>  -->
+             <div class="iconfont " @click="playProcess(true)" :class="isPlay ? 'icon-bofang_':'icon-bofang2'"> 
+              <audio   id="mp3Btn"  ref='audio'>
+                <source :src="url" type="audio/mpeg" />
+              </audio>
+            </div>
+            <span class="iconfont icon-jiantou"></span>
+          </div>
         </div>
-        </div>
-        
+
         <div class="radio-operate">
           <p class="iconfont icon-yinliang"></p>
           <span class="reclce-btn iconfont icon-icon-"></span>
@@ -102,22 +139,107 @@
   </section>
 </template>
 <script>
-import { ipcRenderer } from 'electron';
+import { ipcRenderer, remote } from "electron";
 export default {
-  methods:{
+  data() {
+    return {
+      isMaxSize: true,
+      url: "",
+      isPlay:false,
+      currentlink:''
+    };
+  },
+  mounted() {
+    let win = remote.getCurrentWindow();
+    const path = require("path");
+    this.url = path.join(__static,'/music/不为谁而作的歌.mp3')
+    // this.url = path.join(__static + "/music/" + this.currentlink);
+    win.on("maximize", _ => {
+      this.isMaxSize = false;
+      this.setState();
+    });
+    this.isMaxSize = win.isMaximized();
+    this.getState();
+  },
+  methods: {
+    // 点击播放按钮
+    playProcess(flag) {
+       this.url = this.$store.state.Counter.currentObj.path;
+       this.$refs.audio.src = this.url ;
+      // 阻止冒泡
+      if(event) {
+         event.stopPropagation();
+      }
+       const audio = document.getElementById('mp3Btn');
+       if(flag) {
+           if(audio.paused) {
+            // 如果当前状态是暂停的状态
+            audio.pause();
+              this.isPlay = false;
+          } else {
+            audio.play();
+            this.isPlay = true; 
+          }
+       } else {
+         audio.pause();
+          // this.url = this.$store.state.Counter.currentObj.path;
+          audio.play();
+           this.isPlay = true;
+       }
+     
+    },
+    setState() {
+      let win = remote.getCurrentWindow();
+      let rect = win.getBounds();
+      let isMaxSize = win.isMaximized();
+      let obj = { rect, isMaxSize };
+      localStorage.setItem("winState", JSON.stringify(obj));
+    },
+    getState() {
+      let win = remote.getCurrentWindow();
+      let winState = localStorage.getItem("winState");
+      if (winState) {
+        winState = JSON.parse(winState);
+        if (winState.isMaxSize) win.maximize();
+        else win.setBounds(winState.rect);
+      }
+    },
     // 点击关闭
-    closeWindow () {
+    closeWindow() {
       // 通知主进程退出应用
-      ipcRenderer.send('synchronous-message','close')
+      ipcRenderer.send("synchronous-message", "close");
+    },
+    setting() {
+      //  设置
+    },
+    // 最小化
+    minisize() {
+      // 通知主进程最小化
+      ipcRenderer.send("synchronous-message", "min");
+    },
+    // 最大化
+    maxsize() {
+      // 通知主进程最大化
+      ipcRenderer.send("synchronous-message", "max");
     }
+  },
+  watch:{
+
   }
-}
+};
 </script>
 <style scoped lang="scss">
 .defalut-warp {
   width: 100%;
   height: 100%;
-  background: #fff;
+  .btn-audio {
+    margin: 90px auto;
+    width: 186px;
+    height: 186px;
+    // background: url(images/voice_stop.png) no-repeat center bottom;
+    background-size: cover;
+  }
+  // background: #fff;
   .default-info-warp {
     display: flex;
     height: 100%;
@@ -160,17 +282,17 @@ export default {
             font-size: 16px;
           }
           .my-music-list {
-              i {
-                  width: 16px;
-                  height: 16px;
-                  display: inline-block;
-                  border: 1px solid #9c9c9c;
-                  margin-left: 10px;
-                  border-radius: 50%;
-                  text-align: center;
-                  line-height: 14px;
-                  cursor: pointer;
-              }
+            i {
+              width: 16px;
+              height: 16px;
+              display: inline-block;
+              border: 1px solid #9c9c9c;
+              margin-left: 10px;
+              border-radius: 50%;
+              text-align: center;
+              line-height: 14px;
+              cursor: pointer;
+            }
           }
         }
         .munu-list {
@@ -187,11 +309,11 @@ export default {
               font-size: 16px;
               width: 20px;
               &.icon-paihangbang {
-                  font-size: 12px;
-                  margin-left: -4px;
+                font-size: 12px;
+                margin-left: -4px;
               }
               &::before {
-                  width: 20px;
+                width: 20px;
               }
             }
           }
@@ -205,7 +327,7 @@ export default {
           padding-left: 30px;
           width: 100%;
           height: 120px;
-           background: rgb(247, 247, 247);
+          background: rgb(247, 247, 247);
           color: #333;
           display: flex;
           align-items: center;
@@ -225,12 +347,12 @@ export default {
               .search-warp {
                 position: relative;
                 .icon-sousuo {
-                    position: absolute;
-                    left: 10px;
-                    top:50%;
-                    z-index: 30;
-                    transform: translateY(-50%);
-                    color: #fff;
+                  position: absolute;
+                  left: 10px;
+                  top: 50%;
+                  z-index: 30;
+                  transform: translateY(-50%);
+                  color: #fff;
                 }
                 input {
                   width: 360px;
@@ -270,7 +392,7 @@ export default {
           }
         }
         .asynic-content {
-          overflow: auto;
+          overflow-y: auto;
           padding: 20px;
         }
       }
@@ -278,14 +400,15 @@ export default {
     .default-bottom-warp {
       width: 100%;
       height: 100px;
-     background: rgb(247, 247, 247);
+      background: rgb(247, 247, 247);
       display: flex;
       justify-content: space-between;
       align-items: center;
+      // -webkit-app-region:drag;
       .simply-image-warp {
         flex: 1;
         display: flex;
-        align-items: center; 
+        align-items: center;
         height: 100px;
         .out-img {
           width: 80px;
@@ -312,12 +435,12 @@ export default {
           position: relative;
           width: 150px;
           margin-left: 50px;
-         &:hover {
-           cursor: pointer;
-           ul {
-             display: block;
-           }
-         }
+          &:hover {
+            cursor: pointer;
+            ul {
+              display: block;
+            }
+          }
           ul {
             position: absolute;
             right: 33px;
@@ -326,37 +449,37 @@ export default {
             background: #fff;
             z-index: 30;
             padding: 10px;
-             border-radius: 4px;
-             text-align: center;
-             display: none;
-             li {
-                 line-height: 24px;
-                 cursor: pointer;
-                 font-size: 14px;
-                 &:hover {
-                   cursor: pointer;
-                   color: slateblue;
-                 }
-             }
+            border-radius: 4px;
+            text-align: center;
+            display: none;
+            li {
+              line-height: 24px;
+              cursor: pointer;
+              font-size: 14px;
+              &:hover {
+                cursor: pointer;
+                color: slateblue;
+              }
+            }
           }
         }
         .collect {
-            width: 60px;
-            display: flex;
-              align-items: center; 
+          width: 60px;
+          display: flex;
+          align-items: center;
         }
         .more-operate {
-            position: relative;
-            width: 150px;
-            cursor: pointer;
-            &:hover {
-             h3 {
-                color: slateblue;
-             }
-              ul {
-                display: block;
-              }
+          position: relative;
+          width: 150px;
+          cursor: pointer;
+          &:hover {
+            h3 {
+              color: slateblue;
             }
+            ul {
+              display: block;
+            }
+          }
           ul {
             position: absolute;
             right: 27px;
@@ -365,17 +488,17 @@ export default {
             background: #fff;
             z-index: 30;
             padding: 10px;
-             border-radius: 4px;
-             text-align: center;
-             display: none;
-             li {
-                 line-height: 24px;
-                 cursor: pointer;
-                 font-size: 14px;
-                 &:hover {
-                   color: slateblue;
-                 }
-             }
+            border-radius: 4px;
+            text-align: center;
+            display: none;
+            li {
+              line-height: 24px;
+              cursor: pointer;
+              font-size: 14px;
+              &:hover {
+                color: slateblue;
+              }
+            }
           }
         }
       }
@@ -388,45 +511,47 @@ export default {
       .play-btn {
         display: flex;
         width: 240px;
+        height: 100px;
         margin-right: 50px;
-          align-items: center; 
+        align-items: center;
         text-align: center;
-         span,p {
-            flex: 1;
-            &:hover {
-              color: slateblue;
-              cursor: pointer;
-            }
+        span,
+        p {
+          flex: 1;
+          &:hover {
+            color: slateblue;
+            cursor: pointer;
+          }
         }
-        .icon-bofang2 {
-            &::before {
-                font-size: 40px;
-            }
+        .icon-bofang2,.icon-bofang_ {
+           color: slateblue;
+          &::before {
+            font-size: 40px;
+          }
         }
       }
       .radio-operate {
         flex: 1;
         display: flex;
         justify-items: center;
-          align-items: center; 
-          .icon-yinliang {
-            font-size: 20px;
-            width: 100px;
-            &:hover {
-              color: slateblue;
-            }
+        align-items: center;
+        .icon-yinliang {
+          font-size: 20px;
+          width: 100px;
+          &:hover {
+            color: slateblue;
           }
-        span {
-            flex:1;
-              &:hover {
-              color: slateblue;
-            }
-            font-size: 24px;
-            &.icon-yinle8 {
-              font-size: 30px;
-            }
         }
-       
+        span {
+          flex: 1;
+          &:hover {
+            color: slateblue;
+          }
+          font-size: 24px;
+          &.icon-yinle8 {
+            font-size: 30px;
+          }
+        }
       }
     }
   }
