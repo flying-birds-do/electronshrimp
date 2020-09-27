@@ -49,31 +49,33 @@
           </div>
         </div>
         <div class="defalut-content-right">
-          <div class="default-top-info">
-            <div class="fresh-warp">
-              <span class="icon-arrow">
-                <i class="iconfont icon-jiantouarrowhead7"></i>
-                <i class="iconfont icon-jiantou"></i>
-              </span>
-              <span class="fresh iconfont icon-shuaxinzhongjieban"></span>
-              <div class="search-warp">
-                <i class="iconfont icon-sousuo"></i>
-                <input type="text" />
+          <div class="default-top-info-warp">
+            <div class="default-top-info">
+              <div class="fresh-warp">
+                <span class="icon-arrow">
+                  <i class="iconfont icon-jiantouarrowhead7"></i>
+                  <i class="iconfont icon-jiantou"></i>
+                </span>
+                <span class="fresh iconfont icon-shuaxinzhongjieban" @click="freshMusicList"></span>
+                <div class="search-warp">
+                  <i class="iconfont icon-sousuo"></i>
+                  <input type="text" />
+                </div>
               </div>
-            </div>
-            <div class="setting-warp">
-              <div class="head-img">
-                <img src="@/assets/images/logo.jpg" alt />
-                <p>昏睡的月饼</p>
+              <div class="setting-warp">
+                <div class="head-img">
+                  <img :src="$store.state.Counter.currentObj.urlimage" alt />
+                  <p>昏睡的月饼</p>
+                </div>
+                <span class="iconfont icon-icon-test" @click="setting"></span>
+                <span class="iconfont icon-zuixiaohua" @click="minisize"></span>
+                <span
+                  class="iconfont"
+                  @click="maxsize"
+                  :class="isMaxSize ?'icon-zuidahua2':'icon-zuidahua'"
+                ></span>
+                <span class="close iconfont icon-guanbi5" @click="closeWindow"></span>
               </div>
-              <span class="iconfont icon-icon-test" @click="setting"></span>
-              <span class="iconfont icon-zuixiaohua" @click="minisize"></span>
-              <span
-                class="iconfont"
-                @click="maxsize"
-                :class="isMaxSize ?'icon-zuidahua2':'icon-zuidahua'"
-              ></span>
-              <span class="close iconfont icon-guanbi5" @click="closeWindow"></span>
             </div>
           </div>
           <div class="asynic-content">
@@ -91,50 +93,68 @@
           </div>
           <div class="music-type">
             <h3>标准</h3>
-            <ul>
+            <!-- <ul>
               <li>标准音乐</li>
               <li>高品质</li>
               <li>无损品质</li>
-            </ul>
+            </ul> -->
           </div>
           <span class="collect iconfont icon-xihuan2"></span>
           <div class="more-operate">
             <h3>...</h3>
             <ul>
-              <li>漫游相似歌曲</li>
+              <li @click="randomPlayMusic">漫游相似歌曲</li>
               <li>下载</li>
               <li>评论</li>
             </ul>
           </div>
         </div>
         <div class="play-operate">
-       
           <!-- <audio controls="controls" autoplay="autoplay" @click="clickControls">
               <source :src="url" type="audio/mpeg" />
               Your browser does not support the audio element.
           </audio>-->
           <div class="play-btn">
             <!--  -->
-            
-             <span class="iconfont icon-jiantouarrowhead7"></span> 
+
+            <span class="iconfont icon-jiantouarrowhead7" @click="upMusic" v-if="isCanUpMusic"></span>
+            <span class="iconfont icon-jiantouarrowhead7 grey" v-else></span>
             <!-- <p class="iconfont icon-bofang2"></p>  -->
-             <div class="iconfont " @click="playProcess(true)" :class="isPlay ? 'icon-bofang_':'icon-bofang2'"> 
-              <audio   id="mp3Btn"  ref='audio'>
+            <div
+              class="iconfont"
+              @click="playProcess(true)"
+              :class="isPlay ? 'icon-bofang_':'icon-bofang2'"
+            >
+              <audio id="mp3Btn" ref="audio">
                 <source :src="url" type="audio/mpeg" />
               </audio>
             </div>
-            <span class="iconfont icon-jiantou"></span>
+            <span class="iconfont icon-jiantou" @click="downMusic" v-if="isCanDownMusic"></span>
+            <span class="iconfont icon-jiantou grey" v-else></span>
           </div>
         </div>
 
         <div class="radio-operate">
           <p class="iconfont icon-yinliang"></p>
-          <span class="reclce-btn iconfont icon-icon-"></span>
-          <span class="music-ablity iconfont icon-yinle8"></span>
-          <span class="music-text iconfont icon-geciweidianji"></span>
-          <span class="music-list iconfont icon-liebiao1"></span>
+          <span class="reclce-btn iconfont icon-icon-">
+             <i class="small-tip">单曲循环</i>
+          </span>
+          <!-- <span class="music-ablity iconfont icon-yinle8">
+            <i class="small-tip">歌词</i>
+          </span> -->
+          <span class="music-text iconfont icon-geciweidianji"> 
+            <i class="small-tip">歌词</i>
+            </span>
+          <span class="music-list iconfont icon-liebiao1" @click="openCloseList">
+            <i class="small-tip">歌曲列表</i>
+          </span>
+        </div>
+  <!-- 歌曲列表 -->
+        <div id="menu" class="menu-warp" v-show="isOpenMusicList">
+          <div class="menu-item" v-for="(item,index) in this.$store.state.Counter.musiclist" :key="index" :class="item.id == $store.state.Counter.currentObj.id ?'active':''">{{item.name}}</div>
         </div>
       </div>
+      
     </section>
   </section>
 </template>
@@ -145,15 +165,16 @@ export default {
     return {
       isMaxSize: true,
       url: "",
-      isPlay:false,
-      currentlink:''
+      isPlay: false,
+      isCanUpMusic: true,
+      isCanDownMusic: true,
+      isOpenMusicList:false
     };
   },
   mounted() {
     let win = remote.getCurrentWindow();
     const path = require("path");
-    this.url = path.join(__static,'/music/不为谁而作的歌.mp3')
-    // this.url = path.join(__static + "/music/" + this.currentlink);
+    this.url = "@assets/music/爱若琉璃.mp3";
     win.on("maximize", _ => {
       this.isMaxSize = false;
       this.setState();
@@ -164,29 +185,77 @@ export default {
   methods: {
     // 点击播放按钮
     playProcess(flag) {
-       this.url = this.$store.state.Counter.currentObj.path;
-       this.$refs.audio.src = this.url ;
+      this.url = this.$store.state.Counter.currentObj.path;
+      this.$refs.audio.src = this.url;
       // 阻止冒泡
-      if(event) {
-         event.stopPropagation();
+      if (event) {
+        event.stopPropagation();
       }
-       const audio = document.getElementById('mp3Btn');
-       if(flag) {
-           if(audio.paused) {
-            // 如果当前状态是暂停的状态
-            audio.pause();
-              this.isPlay = false;
-          } else {
-            audio.play();
-            this.isPlay = true; 
-          }
-       } else {
-         audio.pause();
-          // this.url = this.$store.state.Counter.currentObj.path;
+      const audio = document.getElementById("mp3Btn");
+      if (flag) {
+        if (audio.paused) {
+          // 如果当前状态是暂停的状态
+          audio.pause();
+          this.isPlay = false;
+        } else {
           audio.play();
-           this.isPlay = true;
-       }
-     
+          this.isPlay = true;
+        }
+      } else {
+        audio.pause();
+        audio.play();
+        this.isPlay = true;
+      }
+    },
+    // 随机播放歌曲
+    randomPlayMusic () {
+      let list = this.$store.state.Counter.musiclist;
+       this.$store.dispatch(
+            "submitCurrentPath",
+           list[Math.floor(Math.random() * list.length)]
+          );
+          this.playProcess()
+    },
+    // 查找数据
+    findNext(val) {
+      let index = 0;
+      for (let i = 0; i < this.$store.state.Counter.musiclist.length; i++) {
+        if (
+          this.$store.state.Counter.musiclist[i].id ===
+          this.$store.state.Counter.currentObj.id
+        ) {
+          index = i;
+        }
+      }
+      if (val == "up") {
+        if (index > 0) {
+          this.$store.dispatch(
+            "submitCurrentPath",
+            this.$store.state.Counter.musiclist[index - 1]
+          );
+        } else {
+          this.isCanUpMusic = false;
+        }
+      } else {
+        if (index + 1 < this.$store.state.Counter.musiclist.length) {
+          this.$store.dispatch(
+            "submitCurrentPath",
+            this.$store.state.Counter.musiclist[index + 1]
+          );
+        } else {
+          this.isCanDownMusic = false;
+        }
+      }
+    },
+    // 上一首
+    upMusic() {
+      this.findNext("up");
+      this.playProcess();
+    },
+    //下一首
+    downMusic() {
+      this.findNext("down");
+      this.playProcess();
     },
     setState() {
       let win = remote.getCurrentWindow();
@@ -221,11 +290,16 @@ export default {
     maxsize() {
       // 通知主进程最大化
       ipcRenderer.send("synchronous-message", "max");
+    },
+    openCloseList () {
+      this.isOpenMusicList = !this.isOpenMusicList;
+    },
+    // 刷新音乐列表
+    freshMusicList  () {
+     location.reload();
     }
   },
-  watch:{
-
-  }
+  watch: {}
 };
 </script>
 <style scoped lang="scss">
@@ -323,6 +397,10 @@ export default {
         flex: 1;
         display: flex;
         flex-direction: column;
+
+        .default-top-info-warp {
+          height: 120px;
+        }
         .default-top-info {
           padding-left: 30px;
           width: 100%;
@@ -388,6 +466,8 @@ export default {
               width: 30px;
               height: 30px;
               margin-right: 10px;
+              border-radius: 50%;
+              overflow: hidden;
             }
           }
         }
@@ -521,10 +601,32 @@ export default {
           &:hover {
             color: slateblue;
             cursor: pointer;
+            .icon-jiantouarrowhead7 {
+              &.grey {
+                color: #f7f7f7;
+              }
+            }
+            .icon-jiantou {
+              &.grey {
+                color: #696565;
+              }
+            }
           }
         }
-        .icon-bofang2,.icon-bofang_ {
-           color: slateblue;
+        .icon-jiantou {
+          &.grey {
+            color: #696565;
+          }
+        }
+        .icon-jiantouarrowhead7 {
+          &.grey {
+            color: #696565;
+          }
+        }
+        .icon-bofang2,
+        .icon-bofang_ {
+          color: slateblue;
+
           &::before {
             font-size: 40px;
           }
@@ -544,8 +646,27 @@ export default {
         }
         span {
           flex: 1;
+          position: relative;
           &:hover {
             color: slateblue;
+              i {
+                &.small-tip {
+                  display: block;
+                }
+              }
+          }
+          i {
+            &.small-tip {
+              position: absolute;
+              left: -14px;
+              bottom: -23px;
+              font-size: 12px;
+              background: rgba(0, 0, 0, 0.2);
+              border: 1px solid #f5f5f5;
+              color: #fff;
+              padding: 4px 10px;
+              display: none;
+            }
           }
           font-size: 24px;
           &.icon-yinle8 {
@@ -554,6 +675,31 @@ export default {
         }
       }
     }
+  }
+  // 歌曲列表
+  .menu-warp {
+    width: 400px;
+    height: 80%;
+    background: rgba(0,0,0,0.6);
+    box-shadow: 10px 20px 3px #f7f7f7;
+    padding: 20px;
+    position: fixed;
+    right: 10px;
+    bottom: 100px;
+    z-index: 100;
+    overflow-y: auto;
+    color: #fff;
+    .menu-item {
+      height: 24px;
+      line-height: 24px;
+      margin-bottom: 10px;
+      overflow: hidden;
+      &.active {
+        color: blueviolet;
+      }
+      
+    }
+
   }
 }
 </style>

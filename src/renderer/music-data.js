@@ -2,8 +2,8 @@ const path = require('path');
 const fs = require('fs');
 const musicListData = [];
 const musicImgData = [];
-const pathname = __static + "/music/";
-const pathnameImg = __static + "/images/";
+const pathname = __dirname + "/assets/music/";
+const pathnameImg = __dirname + "/assets/images/";
 fs.readdir(pathname, (err,files) =>{
     for(let i =0;i<files.length;i++) {
         fs.stat(path.join(pathname,files[i]),(err,data)=>{
@@ -30,4 +30,3 @@ export  const music = {
     musicListData,
     musicImgData
 }  
-// console.log(musicListData)

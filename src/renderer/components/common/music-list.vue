@@ -3,6 +3,7 @@
     <ul>
       <li v-for="(item,index) in musicName" :key="index" @click="playCurrentMusic(item)">
         <div class="single-box">
+          <i class="play-btn iconfont" :class="item.suired ? 'icon-icon_bofang':'icon-bofang'"></i>
           <span class="play-mount">{{item.mount}}</span>
           <img :src="item.urlimage" alt class="music-bg" />
         </div>
@@ -25,8 +26,9 @@ export default {
   },
   methods:{
     playCurrentMusic (item) {
+      console.log(item)
       this.$store.dispatch('submitCurrentPath',item)
-      this.$emit('playCurrentMusic')
+      this.$emit('playCurrentMusic',item)
     }
   }
 }
@@ -44,6 +46,21 @@ export default {
         margin-bottom: 10px;
       .single-box {
         position: relative;
+        &:hover{
+          .play-btn {
+            display: block;
+          }
+        }
+        .play-btn {
+          position: absolute;
+          left: 50%;
+          top:50%;
+          transform: translate(-50%,-50%);
+          z-index: 40;
+          font-size: 40px;
+          color: blueviolet;
+          display: none;
+        }
         .play-mount {
           position: absolute;
           right: 10px;
