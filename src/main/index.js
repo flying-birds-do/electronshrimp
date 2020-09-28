@@ -1,4 +1,5 @@
-import { app, BrowserWindow, ipcMain , Tray} from 'electron'
+import { app, BrowserWindow, ipcMain , Tray, dialog} from 'electron'
+
 const appIcon = null;
 /**
  * Set `__static` path to static files in production

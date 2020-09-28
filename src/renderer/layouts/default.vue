@@ -142,7 +142,7 @@
           <!-- <span class="music-ablity iconfont icon-yinle8">
             <i class="small-tip">歌词</i>
           </span> -->
-          <span class="music-text iconfont icon-geciweidianji"> 
+          <span class="music-text iconfont icon-geciweidianji" @click="findMusicWord"> 
             <i class="small-tip">歌词</i>
             </span>
           <span class="music-list iconfont icon-liebiao1" @click="openCloseList">
@@ -154,12 +154,20 @@
           <div class="menu-item" v-for="(item,index) in this.$store.state.Counter.musiclist" :key="index" :class="item.id == $store.state.Counter.currentObj.id ?'active':''">{{item.name}}</div>
         </div>
       </div>
-      
+      <!--  歌词 -->
+      <div class="music-word-warp">
+        <div class="operate-table">
+
+        </div>
+        <p>我是歌词</p>
+      </div>
     </section>
   </section>
 </template>
 <script>
-import { ipcRenderer, remote } from "electron";
+import { ipcRenderer, remote ,dialog} from "electron";
+import { music } from "@/music-data.js";
+
 export default {
   data() {
     return {
@@ -297,6 +305,13 @@ export default {
     // 刷新音乐列表
     freshMusicList  () {
      location.reload();
+    },
+    // 查找歌词
+    findMusicWord () {
+      let currentMusicName = this.$store.state.Counter.currentObj.name;
+      if(currentMusicName) {
+
+      } 
     }
   },
   watch: {}

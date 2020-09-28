@@ -60,6 +60,7 @@
 <script>
 import musicList from "@/components/common/music-list";
 import { music } from "@/music-data.js";
+const fs = require('fs');
 export default {
   data() {
     return {
@@ -91,11 +92,13 @@ export default {
       ],
       musicData: [],
       musicName: [],
+      musicWords:[],
       randomSelf: ""
     };
   },
   mounted() {
     this.musicData = music.musicListData;
+    this.musicWords = music.musicWordData;
   },
   components: {
     musicList
@@ -138,6 +141,20 @@ export default {
         xing[Math.floor(Math.random() * xing.length)] +
         words[Math.floor(Math.random() * words.length)];
       return this.randomSelf;
+    },
+    // 获取歌词
+    getmusicWords () {
+      // 读取歌词文件内容
+      for(let i=0;i<this.musicWords.length;i++) {
+        let path = require("@/assets/musicword/" + this.musicWords[i]);
+          fs.readFile(path,function(err,data){
+            if(err){
+                return console.log(err);
+            }
+                console.log("我是异步执行的结果集："+data.toString());
+            });
+      }
+      
     },
     // 截取歌名 去掉.mp3
     sbuStrMusicName(musicList, musicImgData) {
@@ -197,7 +214,10 @@ export default {
   watch: {
     musicData(oldValue, newValue) {
       this.sbuStrMusicName(music.musicListData, music.musicImgData);
-    }
+    },
+    // musicWords () {
+    //   this.getmusicWords(music.musicWordData)
+    // }
   }
 };
 </script>
