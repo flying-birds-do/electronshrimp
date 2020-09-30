@@ -1,5 +1,6 @@
 const path = require('path');
 const fs = require('fs');
+var ID3 = require('id3_reader')
 const musicListData = [];
 const musicImgData = [];
 const musicWordData = [];
@@ -12,6 +13,16 @@ fs.readdir(pathname, (err,files) =>{
         fs.stat(path.join(pathname,files[i]),(err,data)=>{
             if(data.isFile()) {
                 musicListData.push(files[i])
+                ID3.read(path.join(pathname+musicListData[0]), function(err, data) {
+  
+                    console.log(err, data);
+                  
+                  })
+                // fs.readFile(path.join(pathname+musicListData[0]) ,'binary',function(err,data){
+                    
+                //     console.log(data)
+                //     console.log('=====12211221')
+                // });
             }
         })
     }
@@ -33,7 +44,6 @@ fs.readdir(pathnameWord, (err,files) =>{
             if(data.isFile()) {
                 musicWordData.push(files[i])
                 fs.readFile(path.join(pathnameWord+musicWordData[0]) ,function(err,data){
-                        console.log(data.toString())
                         musicContent = data.toString();
                         console.log('=====')
                     });

@@ -42,7 +42,8 @@ const actions = {
    // 播放下一首 
    musicDownCut ({commit},context) {
     commit('SET_DOWNMUSIC',context)
-   }
+   },
+   //控制
 }
 export default {
   state,

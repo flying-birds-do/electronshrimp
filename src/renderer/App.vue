@@ -6,12 +6,29 @@
 
 <script>
   export default {
-    name: 'electronapp'
+    name: 'electronapp',
+    data () {
+      return {
+      }
+    },
+    methods:{
+        playProcess () {
+          // this.$refs.child.playProcess()
+        }
+    },
+    computed:{
+      // isPlayProgress() {
+      //   return this.$store.state.Counter.isPlayProgress;
+      // }
+    }
   }
 </script>
 
 <style>
   /* CSS */
+  html,body ,#app {
+    background: transparent;
+  }
   #app {
     width: 100%;
     height: 100%;

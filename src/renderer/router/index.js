@@ -13,7 +13,12 @@ export default new Router({
       children:[{
         path:'/',
         component: require('@/pages/index.vue').default
-      }]
+      }
+    ]
+    },
+    {
+      path:'/musicword',
+      component:require('@/components/common/music-word.vue').default
     },
     {
       path: '*',

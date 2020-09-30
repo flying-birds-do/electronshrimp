@@ -125,7 +125,7 @@
               @click="playProcess(true)"
               :class="isPlay ? 'icon-bofang_':'icon-bofang2'"
             >
-              <audio id="mp3Btn" ref="audio">
+              <audio id="mp3Btn" ref="audio" autoplay>
                 <source :src="url" type="audio/mpeg" />
               </audio>
             </div>
@@ -142,7 +142,7 @@
           <!-- <span class="music-ablity iconfont icon-yinle8">
             <i class="small-tip">歌词</i>
           </span> -->
-          <span class="music-text iconfont icon-geciweidianji" @click="findMusicWord"> 
+          <span class="music-text iconfont icon-geciweidianji" @click="openMusicWords"> 
             <i class="small-tip">歌词</i>
             </span>
           <span class="music-list iconfont icon-liebiao1" @click="openCloseList">
@@ -200,14 +200,15 @@ export default {
         event.stopPropagation();
       }
       const audio = document.getElementById("mp3Btn");
+
       if (flag) {
         if (audio.paused) {
           // 如果当前状态是暂停的状态
-          audio.pause();
-          this.isPlay = false;
+            audio.play();
+            this.isPlay = true;
         } else {
-          audio.play();
-          this.isPlay = true;
+            audio.pause();
+            this.isPlay = false;
         }
       } else {
         audio.pause();
@@ -286,6 +287,10 @@ export default {
       // 通知主进程退出应用
       ipcRenderer.send("synchronous-message", "close");
     },
+    // 打开新窗口
+    openMusicWords () {
+      ipcRenderer.send('musicWords')
+    },
     setting() {
       //  设置
     },
@@ -305,13 +310,6 @@ export default {
     // 刷新音乐列表
     freshMusicList  () {
      location.reload();
-    },
-    // 查找歌词
-    findMusicWord () {
-      let currentMusicName = this.$store.state.Counter.currentObj.name;
-      if(currentMusicName) {
-
-      } 
     }
   },
   watch: {}

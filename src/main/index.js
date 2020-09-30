@@ -13,7 +13,7 @@ let mainWindow
 const winURL = process.env.NODE_ENV === 'development'
   ? `http://localhost:9080`
   : `file://${__dirname}/index.html`
-
+let musicWin = null;
 function createWindow () {
   /**
    * Initial window options
@@ -22,7 +22,7 @@ function createWindow () {
     height: 800,
     useContentSize: true,
     width: 800,
-    transparent:true,
+    transparent:false,
     // 禁用系统默认窗口
     frame: false,
     show:false,
@@ -37,7 +37,7 @@ function createWindow () {
     // fullscreen: true
   })
   mainWindow.loadURL(winURL)
-  mainWindow.maximize()
+  // mainWindow.maximize()
   mainWindow.show()
   mainWindow.on('closed', () => {
     mainWindow = null
@@ -45,8 +45,6 @@ function createWindow () {
 }
 let fs = require('fs-extra');
 let path = require('path');
-console.log(path)
-console.log(333)
 app.on('ready', createWindow)
 
 app.on('window-all-closed', () => {
@@ -78,6 +76,22 @@ ipcMain.on('synchronous-message', function(event, arg) {
   }
   // event.sender.send('asynchronous-reply', 'pong');
   });
+ipcMain.on('musicWords', (event) => {
+ musicWin = new BrowserWindow({
+    width:800,
+    height:120,
+    frame:false,
+    resizable:true,
+    transparent: true,
+    // parent:mainWindow
+  })
+  musicWin.loadURL(winURL +`#/musicword`)
+  // musicWin.webContents.closeDevTools();
+})
+// 关闭歌词
+ipcMain.on('closemusicWords', (event) => {
+  musicWin.close();
+})
 
 // ipcMain.on('synchronous-message', function(event, arg) {
 //   console.log(arg); // prints "ping"
