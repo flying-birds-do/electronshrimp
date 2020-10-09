@@ -12,14 +12,18 @@
       }
     },
     methods:{
-        playProcess () {
-          // this.$refs.child.playProcess()
-        }
+        // playProcess () {
+        //   debugger
+        //   this.$refs.child.playProcess()
+        // },
+        // findNext(val) {
+        //    this.$refs.child.findNext(up)
+        // }
     },
     computed:{
-      // isPlayProgress() {
-      //   return this.$store.state.Counter.isPlayProgress;
-      // }
+      isPlayProgress() {
+        return this.$store.state.Counter.isPlayProgress;
+      }
     }
   }
 </script>

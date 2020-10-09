@@ -110,23 +110,24 @@ export default {
     },
     playCurrentMusic(item) {
       // this.$emit("playCurrentMusic", item);
+      let musiclist =  JSON.parse(JSON.stringify(this.$store.state.Counter.musiclist))
       let idx = 0;
-      let index = this.$store.state.Counter.musiclist.filter(item1 => {
+      let index = musiclist.filter(item1 => {
         idx = item.id;
         return item1.id == item.id;
       });
-      for (let i = 0; i < this.$store.state.Counter.musiclist.length; i++) {
-        this.$store.state.Counter.musiclist[i].suired = false;
+      for (let i = 0; i < musiclist.length; i++) {
+        musiclist.suired = false;
       }
       if (index.length > 0) {
         let changeVal = JSON.parse(JSON.stringify(item));
-        let changemusiclist = JSON.parse(
-          JSON.stringify(this.$store.state.Counter.musiclist)
-        );
-        changemusiclist[idx] = changeVal;
+        // let changemusiclist = JSON.parse(
+        //   JSON.stringify(this.$store.state.Counter.musiclist)
+        // );
+        musiclist[idx] = changeVal;
         changeVal.suired = !changeVal.suired;
         this.$store.dispatch("submitCurrentPath", changeVal);
-        this.$store.dispatch("musicListState", changemusiclist);
+        this.$store.dispatch("musicListState", musiclist);
       } else {
         this.$store.dispatch(
           "submitCurrentPath",

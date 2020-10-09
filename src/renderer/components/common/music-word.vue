@@ -38,40 +38,20 @@ export default {
   methods: {
     // 点击播放按钮
     playProcess(flag) {
+      console.log(this)
       console.log( this.$parent)
-      // this.$parent.$parent.playProcess(2)
-      this.url = this.$store.state.Counter.currentObj.path;
-      this.$refs.audio1.src = this.url;
-      // 阻止冒泡
-      if (event) {
-        event.stopPropagation();
-      }
-      const audio = document.getElementById("mp3Btn1");
-      if (flag) {
-        if (audio.paused) {
-          // 如果当前状态是暂停的状态
-           audio.play();
-         
-          this.isPlay = false;
-        } else {
-          audio.pause();
-          this.isPlay = true;
-        }
-      } else {
-        audio.pause();
-        audio.play();
-        this.isPlay = true;
-      }
     },
     // 上一首
     upMusic() {
-      this.findNext("up");
-      this.playProcess();
+       this.$parent.findNext("up")
+      // this.findNext("up");
+      // this.playProcess();
     },
     //下一首
     downMusic() {
-      this.findNext("down");
-      this.playProcess();
+      this.$parent.findNext("down")
+      // this.findNext("down");
+      // this.playProcess();
     },
     // 查找数据
     findNext(val) {

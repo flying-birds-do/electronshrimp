@@ -34,7 +34,7 @@ function createWindow () {
       webSecurity:false
     },
     // 会导致无法关闭没有默认的按钮了
-    // fullscreen: true
+    fullscreen: true
   })
   mainWindow.loadURL(winURL)
   // mainWindow.maximize()
@@ -92,6 +92,23 @@ ipcMain.on('musicWords', (event) => {
 ipcMain.on('closemusicWords', (event) => {
   musicWin.close();
 })
+let configDir = app.getPath('userData')
+console.log(configDir)
+console.log('我是路径')
+// 写入名字
+ipcMain.on('setting-file', (event,name) => {
+  let obj = JSON.stringify({
+    name:name
+  })
+ fs.writeFile(configDir+'config.txt',obj,(err)=>{
+  if(err) {
+    console.log('err')
+  } else {
+    console.log('file sucess')
+  }
+ })
+})
+
 
 // ipcMain.on('synchronous-message', function(event, arg) {
 //   console.log(arg); // prints "ping"

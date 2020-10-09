@@ -97,7 +97,7 @@
               <li>标准音乐</li>
               <li>高品质</li>
               <li>无损品质</li>
-            </ul> -->
+            </ul>-->
           </div>
           <span class="collect iconfont icon-xihuan2"></span>
           <div class="more-operate">
@@ -109,23 +109,22 @@
             </ul>
           </div>
         </div>
+
         <div class="play-operate">
           <!-- <audio controls="controls" autoplay="autoplay" @click="clickControls">
               <source :src="url" type="audio/mpeg" />
               Your browser does not support the audio element.
           </audio>-->
-          <div class="play-btn">
-            <!--  -->
 
+          <div class="play-btn">
             <span class="iconfont icon-jiantouarrowhead7" @click="upMusic" v-if="isCanUpMusic"></span>
             <span class="iconfont icon-jiantouarrowhead7 grey" v-else></span>
-            <!-- <p class="iconfont icon-bofang2"></p>  -->
             <div
               class="iconfont"
-              @click="playProcess(true)"
+              @click.stop="playProcess(true)"
               :class="isPlay ? 'icon-bofang_':'icon-bofang2'"
             >
-              <audio id="mp3Btn" ref="audio" autoplay>
+              <audio id="mp3Btn" ref="audio">
                 <source :src="url" type="audio/mpeg" />
               </audio>
             </div>
@@ -135,37 +134,48 @@
         </div>
 
         <div class="radio-operate">
-          <p class="iconfont icon-yinliang"></p>
-          <span class="reclce-btn iconfont icon-icon-">
-             <i class="small-tip">单曲循环</i>
+          <!-- <p class="iconfont icon-yinliang">
+                <input type="range" id="slider" min="0" max="1000" step="1" value="0" />
+          </p> -->
+
+          <span
+            class="reclce-btn iconfont"
+            :class="isLoop ? 'icon-ziyuan':'icon-icon-' "
+            @click="playRecle"
+          >
+            <i class="small-tip" v-if="isLoop">单曲循环</i>
+            <i class="small-tip" v-else>顺序播放</i>
           </span>
           <!-- <span class="music-ablity iconfont icon-yinle8">
             <i class="small-tip">歌词</i>
-          </span> -->
-          <span class="music-text iconfont icon-geciweidianji" @click="openMusicWords"> 
+          </span>-->
+          <!-- <span class="music-text iconfont icon-geciweidianji" @click="openMusicWords"> 
             <i class="small-tip">歌词</i>
-            </span>
+          </span>-->
           <span class="music-list iconfont icon-liebiao1" @click="openCloseList">
             <i class="small-tip">歌曲列表</i>
           </span>
         </div>
-  <!-- 歌曲列表 -->
+        <!-- 歌曲列表 -->
         <div id="menu" class="menu-warp" v-show="isOpenMusicList">
-          <div class="menu-item" v-for="(item,index) in this.$store.state.Counter.musiclist" :key="index" :class="item.id == $store.state.Counter.currentObj.id ?'active':''">{{item.name}}</div>
+          <div
+            class="menu-item"
+            v-for="(item,index) in this.$store.state.Counter.musiclist"
+            :key="index"
+            :class="item.id == $store.state.Counter.currentObj.id ?'active':''"
+          >{{item.name}}</div>
         </div>
       </div>
       <!--  歌词 -->
-      <div class="music-word-warp">
-        <div class="operate-table">
-
-        </div>
+      <!-- <div class="music-word-warp">
+        <div class="operate-table"></div>
         <p>我是歌词</p>
-      </div>
+      </div> -->
     </section>
   </section>
 </template>
 <script>
-import { ipcRenderer, remote ,dialog} from "electron";
+import { ipcRenderer, remote, dialog } from "electron";
 import { music } from "@/music-data.js";
 
 export default {
@@ -176,7 +186,8 @@ export default {
       isPlay: false,
       isCanUpMusic: true,
       isCanDownMusic: true,
-      isOpenMusicList:false
+      isOpenMusicList: false,
+      isLoop: false
     };
   },
   mounted() {
@@ -195,35 +206,62 @@ export default {
     playProcess(flag) {
       this.url = this.$store.state.Counter.currentObj.path;
       this.$refs.audio.src = this.url;
+      let that = this;
       // 阻止冒泡
-      if (event) {
-        event.stopPropagation();
-      }
       const audio = document.getElementById("mp3Btn");
-
+      // audio.volume = 0.3;
       if (flag) {
-        if (audio.paused) {
-          // 如果当前状态是暂停的状态
-            audio.play();
-            this.isPlay = true;
-        } else {
+        if (this.isLoop) {
+          if (this.isPlay) {
             audio.pause();
             this.isPlay = false;
+          } else {
+            audio.play();
+            this.isPlay = true;
+          }
+        } else {
+          audio.addEventListener("ended", function() {
+            that.downMusic();
+          });
         }
       } else {
         audio.pause();
         audio.play();
         this.isPlay = true;
+        audio.addEventListener("ended", function() {
+          that.play();
+        });
+      }
+    },
+  
+    // 切换播放顺序
+    playRecle() {
+      this.isLoop = !this.isLoop;
+      const audio = document.getElementById("mp3Btn");
+      if (!this.isPlay) {
+        audio.play();
+        this.isPlay = true;
+      }
+      if (this.isLoop) {
+        // 单曲循环
+        // audio.loop = true;
+        audio.addEventListener("ended", function() {
+          console.log("音频已播放完成");
+          audio.play();
+        });
+      } else {
+        audio.loop = false;
+        this.downMusic();
       }
     },
     // 随机播放歌曲
-    randomPlayMusic () {
+    randomPlayMusic() {
       let list = this.$store.state.Counter.musiclist;
-       this.$store.dispatch(
-            "submitCurrentPath",
-           list[Math.floor(Math.random() * list.length)]
-          );
-          this.playProcess()
+      this.$store.dispatch(
+        "submitCurrentPath",
+        list[Math.floor(Math.random() * list.length)]
+      );
+      this.playProcess();
     },
     // 查找数据
     findNext(val) {
@@ -287,9 +325,56 @@ export default {
       // 通知主进程退出应用
       ipcRenderer.send("synchronous-message", "close");
     },
+    // 写入配置文件
+    writeFile () {
+         let langulage = [
+        "春暖花开",
+        "十字路口",
+        "千军万马",
+        "白手起家",
+        "张灯结彩",
+        "风和日丽",
+        "万里长城",
+        "人来人往",
+        "自由自在",
+        "瓜田李下",
+        "助人为乐",
+        "红男绿女",
+        "春风化雨",
+        "马到成功",
+        "拔苗助长",
+        "安居乐业",
+        "走马观花",
+        "念念不忘",
+        "落花流水",
+        "一往无前",
+        "落地生根",
+        "天罗地网",
+        "东山再起",
+        "一事无成",
+        "山清水秀",
+        "语重心",
+        "别有洞天",
+        "水深火热",
+        "鸟语花香",
+        "自以为是"
+      ];
+      let name = ['的帆布鞋','的太阳花','的向日葵','的沈清秋','的小妹妹','的少年','的纯牛奶']
+      ipcRenderer.send("setting-file",randomname(langulage,name));
+    },
+    // 读取配置文件
+    readFile () {
+      
+    },
+    randomname(name, words) {
+      this.randomSelf =
+        name[Math.floor(Math.random() * xing.length)] +
+        words[Math.floor(Math.random() * words.length)];
+      return this.randomSelf;
+    },
     // 打开新窗口
-    openMusicWords () {
-      ipcRenderer.send('musicWords')
+    openMusicWords() {
+      ipcRenderer.send("musicWords");
     },
     setting() {
       //  设置
@@ -304,18 +389,49 @@ export default {
       // 通知主进程最大化
       ipcRenderer.send("synchronous-message", "max");
     },
-    openCloseList () {
+    openCloseList() {
       this.isOpenMusicList = !this.isOpenMusicList;
     },
     // 刷新音乐列表
-    freshMusicList  () {
-     location.reload();
+    freshMusicList() {
+      location.reload();
     }
   },
   watch: {}
 };
 </script>
 <style scoped lang="scss">
+
+// input[type=range] {
+//     -webkit-appearance: none;
+//     width: 300px;
+//     border-radius: 10px; /*这个属性设置使填充进度条时的图形为圆角*/
+// }
+// input[type=range]::-webkit-slider-thumb {
+//     -webkit-appearance: none;
+// }
+
+// input[type=range]::-webkit-slider-runnable-track {
+//     height: 15px;
+//     border-radius: 10px; /*将轨道设为圆角的*/
+//     box-shadow: 0 1px 1px #def3f8, inset 0 .125em .125em #0d1112; /*轨道内置阴影效果*/
+// }
+
+// input[type=range]:focus {
+//     outline: none;
+// }
+
+// input[type=range]::-webkit-slider-thumb {
+//     -webkit-appearance: none;
+//     height: 25px;
+//     width: 25px;
+//     margin-top: -5px; /*使滑块超出轨道部分的偏移量相等*/
+//     background: #ffffff; 
+//     border-radius: 50%; /*外观设置为圆形*/
+//     border: solid 0.125em rgba(205, 224, 230, 0.5); /*设置边框*/
+//     box-shadow: 0 .125em .125em #3b4547; /*添加底部阴影*/
+// }
+
 .defalut-warp {
   width: 100%;
   height: 100%;
@@ -653,20 +769,22 @@ export default {
         .icon-yinliang {
           font-size: 20px;
           width: 100px;
+          position: relative;
           &:hover {
             color: slateblue;
           }
+          
         }
         span {
           flex: 1;
           position: relative;
           &:hover {
             color: slateblue;
-              i {
-                &.small-tip {
-                  display: block;
-                }
+            i {
+              &.small-tip {
+                display: block;
               }
+            }
           }
           i {
             &.small-tip {
@@ -693,7 +811,7 @@ export default {
   .menu-warp {
     width: 400px;
     height: 80%;
-    background: rgba(0,0,0,0.6);
+    background: rgba(0, 0, 0, 0.6);
     box-shadow: 10px 20px 3px #f7f7f7;
     padding: 20px;
     position: fixed;
@@ -710,9 +828,7 @@ export default {
       &.active {
         color: blueviolet;
       }
-      
     }
-
   }
 }
 </style>
